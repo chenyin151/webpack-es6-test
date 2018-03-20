@@ -15,7 +15,7 @@ console.log('default-num',defaultNum,num);
 import MyClass from './MyClass';
 import {add1} from './Forward'
 let cls = new MyClass();
-console.log('导出的类：', cls, add1(2,2));
+console.log('导出的类是：', cls, add1(2,2));
 import exp,* as math from './circleplus';
 console.log('exp:',exp(2));
 import * as constrants from './constrants';
