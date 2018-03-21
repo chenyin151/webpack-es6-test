@@ -78,16 +78,28 @@
 
 	var constrants = _interopRequireWildcard(_constrants);
 
+	var _crc = __webpack_require__(10);
+
+	var _crc2 = _interopRequireDefault(_crc);
+
+	var _foreach = __webpack_require__(11);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+	circle.foo = '333';
 	// import { area, circumference } from "./circle";
+
+	circle.area1 = function () {};
+	console.log('动态修改：', circle.foo, circle);
+
 	console.log(_profile.firstName, _profile.lastName);
 	_profile.o.firstName = 'chenyin';
 	console.log('o:', _profile.o);
 	console.log('圆面积：' + circle.area(4));
 	console.log('圆周长' + circle.circumference(14));
+
 	(0, _exportDefault2.default)();
 
 	console.log('add:', (0, _modules2.default)(2, 2));
@@ -95,10 +107,16 @@
 	console.log('default-num', _defaultNum2.default, _defaultNum.num);
 
 	var cls = new _MyClass2.default();
-	console.log('导出的类：', cls, (0, _Forward.add1)(2, 2));
+	console.log('导出的类是：', cls, (0, _Forward.add1)(2, 2));
 
-	// console.log('常量：',constrants.A);
 	console.log('exp:', (0, math.default)(2));
+	// console.log('常量：',constrants.A);
+
+	console.log('crc32', _crc2.default);
+
+	console.log('add1', _modules2.default);
+
+	console.log('foreach', _foreach.each);
 
 /***/ }),
 /* 1 */
@@ -258,6 +276,34 @@
 	var A = exports.A = 1;
 	var B = exports.B = 2;
 	var C = exports.C = 3;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = crc32;
+	function crc32() {}
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (obj) {};
+
+	exports.each = each;
+	function each(obj, iterator, context) {}
+	exports.forEach = each;
 
 /***/ })
 /******/ ]);
