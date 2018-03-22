@@ -118,6 +118,8 @@
 
 	console.log('foreach', _foreach.each);
 
+	console.log('e:', _circleplus.e, _circleplus.area);
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports) {
@@ -250,9 +252,9 @@
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -262,6 +264,14 @@
 	    return Math.exp(x);
 	};
 
+	var _circle = __webpack_require__(2);
+
+	Object.defineProperty(exports, 'area', {
+	    enumerable: true,
+	    get: function get() {
+	        return _circle.area;
+	    }
+	});
 	var e = exports.e = 2.71828182846;
 
 /***/ }),

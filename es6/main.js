@@ -34,3 +34,6 @@ console.log('add1',add2)
 import {each as forEach} from './foreach'
 console.log('foreach',forEach)
 
+import {e,circleArea} from './circleplus'
+console.log('e:',e,circleArea)
+
