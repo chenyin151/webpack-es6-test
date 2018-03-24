@@ -3,9 +3,30 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>ES6</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="bundle.js"></script>
+    <script type="module">
+        // import {Hello} from './Foo.js'
+        class E{
+    constructor(){
+        this.x = 1;
+    }
+}
+
+class F extends E{
+
+    constructor(){
+        super();
+        this.x = 3;
+        super.x = 6;
+        console.log('F中this.x:\n'+this.x,'\nF中this:\n'+this);
+    }
+}
+
+new F();
+
+    </script>
 </head>
 <body>
     

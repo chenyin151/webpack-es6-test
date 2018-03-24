@@ -35,5 +35,16 @@ import {each as forEach} from './foreach'
 console.log('foreach',forEach)
 
 import {e,circleArea} from './circleplus'
+import Main, { ColorPoint, Point, B, A } from "./ClassTest";
+import ClassTest2 from "./ClassTest2";
 console.log('e:',e,circleArea)
 
+let cp = new ColorPoint(200,100,'red');
+console.log('cp',cp,cp instanceof ColorPoint,cp instanceof Point)
+
+B.Hello();
+new A();
+
+console.log('子类是否继承父类：',Object.getPrototypeOf(ColorPoint) === Point)
+new Main();
+new ClassTest2();
