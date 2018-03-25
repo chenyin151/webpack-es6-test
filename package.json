@@ -18,7 +18,7 @@
     "install": "^0.8.1",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "webpack": "^1.13.1"
+    "webpack": "^1.13.0"
   },
   "devDependencies": {
     "webpack": "^1.15.0",

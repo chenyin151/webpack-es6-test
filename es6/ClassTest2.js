@@ -33,8 +33,35 @@ class MyArray extends Array{
         super();
     }
 }
+//-------------------------------
+
+// 带版本功能的数组
+class VersionedArray extends Array {
+    constructor(){
+        super();
+        this.history=[[]];
+    }
+    commit() {
+        this.history.push(this.slice());
+    }
+    reverse1() {
+        debugger
+        console.log('reverse')
+        this.splice(0, this.length,...this.history[this.history.length - 1]);
+    }
+}
+
+// -----------------------------------------
 
 
+class Test extends Array{
+    constructor(){
+        super();
+    }
+    commit(){
+
+    }
+}
 export default class ClassTest2 {
     constructor() {
         new F();
@@ -47,5 +74,22 @@ export default class ClassTest2 {
         const arr = new MyArray();
         arr[0]=1;
         console.log('自定义数组：',arr.length);
+
+        // 带版本功能的数组
+        // const x = new VersionedArray();
+        // x.push(1);
+        // x.push(2);
+        // console.log('x.history:',x.history);
+        // x.reverse1();
+        // console.log('x.history2:',x.history);
+        // x.push(3);
+        // console.log('x:',x);
+        // console.log('x.history3:',x.history);
+        // x.reverse();
+        // console.log('x2:',x);
+        // -------------------------------
+
+        let c = new Test()
+        c.commit();
     }
 }
