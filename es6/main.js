@@ -48,3 +48,5 @@ new A();
 console.log('子类是否继承父类：',Object.getPrototypeOf(ColorPoint) === Point)
 new Main();
 new ClassTest2();
+
+new Reflect();

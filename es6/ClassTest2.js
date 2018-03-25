@@ -58,7 +58,7 @@ const a = {
 const b={
     b: 'b'
 }
-const c = {...a,...b};
+// const c = {...a,...b};
 
 class Test extends Array{
     constructor(){
@@ -96,7 +96,7 @@ export default class ClassTest2 {
         // -------------------------------
 
         let c = new Test()
-        c.commit();
+        // c.commit();
         console.log('c:',c)
     }
 }

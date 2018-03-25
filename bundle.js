@@ -88,7 +88,7 @@
 
 	var _ClassTest2 = _interopRequireDefault(_ClassTest);
 
-	var _ClassTest3 = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./ClassTest2\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _ClassTest3 = __webpack_require__(13);
 
 	var _ClassTest4 = _interopRequireDefault(_ClassTest3);
 
@@ -137,6 +137,8 @@
 	console.log('子类是否继承父类：', Object.getPrototypeOf(_ClassTest.ColorPoint) === _ClassTest.Point);
 	new _ClassTest2.default();
 	new _ClassTest4.default();
+
+	new Reflect();
 
 /***/ }),
 /* 1 */
@@ -580,6 +582,194 @@
 	};
 
 	exports.default = Main;
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var E = function E() {
+	    _classCallCheck(this, E);
+
+	    this.x = 1;
+	};
+
+	var F = function (_E) {
+	    _inherits(F, _E);
+
+	    function F() {
+	        _classCallCheck(this, F);
+
+	        var _this = _possibleConstructorReturn(this, (F.__proto__ || Object.getPrototypeOf(F)).call(this));
+
+	        _this.x = 3;
+	        // 这里的super.x在浏览器中直接运行就是this.x,但是在打包工具（webpack和babel）中
+	        // 存在问题，导致无法覆盖子类中的this.x,建议别这么用
+	        _set(F.prototype.__proto__ || Object.getPrototypeOf(F.prototype), 'x', 6, _this);
+	        console.log('F中this.x:\n' + _this.x, '\nF中this:\n' + _this);
+	        return _this;
+	    }
+
+	    return F;
+	}(E);
+
+	var A = function () {
+	    function A() {
+	        _classCallCheck(this, A);
+	    }
+
+	    _createClass(A, null, [{
+	        key: 'myMethod',
+	        value: function myMethod() {}
+	    }]);
+
+	    return A;
+	}();
+
+	var B = function (_A) {
+	    _inherits(B, _A);
+
+	    function B() {
+	        _classCallCheck(this, B);
+
+	        var _this2 = _possibleConstructorReturn(this, (B.__proto__ || Object.getPrototypeOf(B)).call(this));
+
+	        console.log(_get(B.prototype.__proto__ || Object.getPrototypeOf(B.prototype), 'valueOf', _this2).call(_this2) instanceof B);
+	        return _this2;
+	    }
+
+	    return B;
+	}(A);
+
+	// 数组的继承
+
+
+	var MyArray = function (_Array) {
+	    _inherits(MyArray, _Array);
+
+	    function MyArray() {
+	        _classCallCheck(this, MyArray);
+
+	        return _possibleConstructorReturn(this, (MyArray.__proto__ || Object.getPrototypeOf(MyArray)).call(this));
+	    }
+
+	    return MyArray;
+	}(Array);
+	//-------------------------------
+
+	// 带版本功能的数组
+
+
+	var VersionedArray = function (_Array2) {
+	    _inherits(VersionedArray, _Array2);
+
+	    function VersionedArray() {
+	        _classCallCheck(this, VersionedArray);
+
+	        var _this4 = _possibleConstructorReturn(this, (VersionedArray.__proto__ || Object.getPrototypeOf(VersionedArray)).call(this));
+
+	        _this4.history = [[]];
+	        return _this4;
+	    }
+
+	    _createClass(VersionedArray, [{
+	        key: 'commit',
+	        value: function commit() {
+	            this.history.push(this.slice());
+	        }
+	    }, {
+	        key: 'reverse1',
+	        value: function reverse1() {
+	            debugger;
+	            console.log('reverse');
+	            this.splice.apply(this, [0, this.length].concat(_toConsumableArray(this.history[this.history.length - 1])));
+	        }
+	    }]);
+
+	    return VersionedArray;
+	}(Array);
+
+	// -----------------------------------------
+
+
+	var a = {
+	    a: 'a'
+	};
+	var b = {
+	    b: 'b'
+	    // const c = {...a,...b};
+
+	};
+	var Test = function (_Array3) {
+	    _inherits(Test, _Array3);
+
+	    function Test() {
+	        _classCallCheck(this, Test);
+
+	        return _possibleConstructorReturn(this, (Test.__proto__ || Object.getPrototypeOf(Test)).call(this));
+	    }
+
+	    _createClass(Test, [{
+	        key: 'commit',
+	        value: function commit() {}
+	    }]);
+
+	    return Test;
+	}(Array);
+
+	var ClassTest2 = function ClassTest2() {
+	    _classCallCheck(this, ClassTest2);
+
+	    new F();
+	    var b1 = new B();
+	    console.log('继承：', B.prototype.__proto__);
+	    Object.setPrototypeOf(B.prototype, A.prototype);
+	    Object.setPrototypeOf(B, A);
+	    var b = new B();
+	    // console.log('b:', b.myMethod());
+	    var arr = new MyArray();
+	    arr[0] = 1;
+	    console.log('自定义数组：', arr.length);
+
+	    // 带版本功能的数组
+	    // const x = new VersionedArray();
+	    // x.push(1);
+	    // x.push(2);
+	    // console.log('x.history:',x.history);
+	    // x.reverse1();
+	    // console.log('x.history2:',x.history);
+	    // x.push(3);
+	    // console.log('x:',x);
+	    // console.log('x.history3:',x.history);
+	    // x.reverse();
+	    // console.log('x2:',x);
+	    // -------------------------------
+
+	    var c = new Test();
+	    // c.commit();
+	    console.log('c:', c);
+	};
+
+	exports.default = ClassTest2;
 
 /***/ })
 /******/ ]);
