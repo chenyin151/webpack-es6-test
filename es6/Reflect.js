@@ -39,3 +39,37 @@ console.log('a1:',a1);
 console.log('b1:',b1);
 console.log('c1:',c1);
 
+var o={};
+Object.defineProperty(o,'a',{get:function(){return 1;},configurable:true});
+// Object.defineProperty(o,'a',{configurable: true});
+// Object.defineProperty(o,'a',{enumerable:true});
+Object.defineProperty(o,'a',{set:function(){}});
+// Object.defineProperty(o,'a',{value:12});
+console.log(o.a);
+delete o.a;
+console.log(o.a);
+
+// 自存档对象
+function Archiver() {
+    var temperature=null;
+    var archive=[];
+
+    Object.defineProperty(this,'temperature',{
+        get:function(){
+            console.log('get!');
+            return temperature;
+        },
+        set:function(value) {
+            temperature=value;
+            archive.push({val:temperature});
+        }
+    });
+    this.getArchive=function(){
+        return archive;
+    }
+}
+var arc=new Archiver();
+arc.temperature;
+arc.temperature=11;
+arc.temperature=13;
+console.log('getArchive:',arc.getArchive());
