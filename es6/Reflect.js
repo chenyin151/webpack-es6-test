@@ -1,3 +1,6 @@
+/**
+ * ddd
+ */
 class A1 {
     constructor(name) {
         console.log('Class A1 is invoked!');
