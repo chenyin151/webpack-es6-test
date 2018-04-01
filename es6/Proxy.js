@@ -24,3 +24,46 @@ var handler = {
 var proxy1 = new Proxy(target, handler);
 proxy1.a = 1;
 console.log('proxy.a', proxy1.a);
+
+// proxy对象是obj对象的原型，obj对象本身并没有time属性，
+// 所以根据原型链，会在proxy对象上读取该属性，导致被拦截。
+var proxy = new Proxy({},{
+    get: function(target, property) {
+        return 35;
+    }
+});
+let obj2 = Object.create(proxy);
+console.log('obj.time:',obj2.time);
+// ---------------------------------------------------
+/**
+ * handler
+ */
+var handler = {
+    get:function(target, name) {
+        if (name === 'prototype') {
+            return Object.prototype;
+        }
+        return 'Hello, ' + name;
+    },
+    isExtensible:function(target){
+        console.log('拦截isExtension')
+    },
+    // 拦截 Proxy 实例作为函数调用的操作，
+    // 比如proxy(...args)、proxy.call(object, ...args)、proxy.apply(...)。
+    apply: function() {
+        return 13;
+    },
+    // 拦截 Proxy 实例作为构造函数调用的操作，比如new proxy(...args)。
+    construct: function(target, args) {
+        return {value:args[1]};
+    }
+};
+var fproxy = new Proxy(function(x,y) {
+    return x + y;
+},handler);
+Function.isExtensible
+console.log('fproxy(1,2):',fproxy(1,2));
+console.log('new fproxy(1,2):',new fproxy(1,2));
+console.log('fproxy.prototype:',fproxy.prototype = Object.prototype);
+fproxy.a;
+
