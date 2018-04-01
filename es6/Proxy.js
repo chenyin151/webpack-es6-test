@@ -120,17 +120,30 @@ console.log('arr[-1]', arr[-1]);
 
 // proxy链式调用
 var pipe = (function() {
+    // 执行pipe(3)会执行下面的函数并返回Proxy
     return function(value) {
         var funcStack = [];
         var oproxy = new Proxy({}, {
             get: function(pipeObject, fnName) {
-                debugger
+                debugger;
                 if (fnName === 'get') {
+                    // Array.reduce(callbackFn, [initialValue]),callbackFn函数包含4个参数：
+                    // preValue: 上一次调用回调返回的值， 或者是提供的初始值（ initialValue），在
+                    // 这里就是val,fn(val)返回的值就成为了下次val的值
+                    // curValue: 数组中当前被处理的数组项, 在这里就是fn
+                    // index: 当前数组项在数组中的索引值
+                    // array: 调用 reduce() 方法的数组，当指定了initialValue，那么，第一次
+                    // preValue就等于initialValue,当执行一次，
+                    // funcStack.reduce会依次执行数组中的方法,它会把上次执行的结果传入下次执行的
+                    // 方法中
                     return funcStack.reduce(function(val, fn) {
                         return fn(val);
                     }, value);
                 }
+                // 存储double pow reverseInt方法到funStack中，然后把这个
+                // Proxy实例返回出去用来读取下一个属性
                 funcStack.push(window[fnName]);
+
                 return oproxy;
             }
         });
