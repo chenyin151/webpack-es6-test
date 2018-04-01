@@ -90,7 +90,6 @@ console.log(proxy.name)
 // get方法可以继承
 let proto = new Proxy({foo:'chen'}, {
     get(target, propertyKey, receiver) {
-        debugger
         console.log('GET ' + propertyKey);
         return target[propertyKey];
     }
@@ -98,3 +97,48 @@ let proto = new Proxy({foo:'chen'}, {
 let obj1 =Object.create(proto);
 console.log('obj.foo:', obj1.foo,proto.foo);
 // -------------------------------------------
+
+// createArray会创建数组，把值push到数组中，然后设置代理来拦截get操作
+// 当数组索引为-1的时候读取数组最后的值，否则正常读取
+function createArray(...elements) {
+    let handler = {
+        get(target, propKey, receiver) {
+            let index = Number(propKey);
+            if (index < 0) {
+                propKey = String(target.length + index);
+            }
+            return Reflect.get(target, propKey, receiver);
+        }
+    }
+    let target = [];
+    target.push(...elements);
+    return new Proxy(target, handler);
+}
+let arr = createArray('a','b','c');
+console.log('arr[-1]',arr[-1]);
+// -------------------------------------------------------------
+
+// proxy链式调用
+var pipe = (function(){
+    return function(value) {
+        var funcStack = [];
+        var oproxy = new Proxy({}, {
+            get: function(pipeObject, fnName) {
+                debugger
+                if (fnName === 'get') {
+                    return funcStack.reduce(function(val, fn) {
+                        return fn(val);
+                    },value);
+                }
+                funcStack.push(window[fnName]);
+                return oproxy;
+            }
+        });
+        return oproxy;
+    }
+}());
+var double = n => n * 2;
+var pow = n => n * n;
+var reverseInt = n => n.toString().split("").reverse().join("")|0;
+console.log('pipe:',pipe(3).double.pow.reverseInt.get);
+// -------------------------------------------------------------
