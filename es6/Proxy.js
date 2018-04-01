@@ -45,13 +45,14 @@ var handler = {
         }
         return 'Hello, ' + name;
     },
-    isExtensible:function(target){
+    isExtensible:function(){
         console.log('拦截isExtension')
+        return true;
     },
     // 拦截 Proxy 实例作为函数调用的操作，
     // 比如proxy(...args)、proxy.call(object, ...args)、proxy.apply(...)。
-    apply: function() {
-        return 13;
+    apply: function(x,y) {
+        return x+y;
     },
     // 拦截 Proxy 实例作为构造函数调用的操作，比如new proxy(...args)。
     construct: function(target, args) {
@@ -61,9 +62,39 @@ var handler = {
 var fproxy = new Proxy(function(x,y) {
     return x + y;
 },handler);
-Function.isExtensible
+console.log(Object.isExtensible(fproxy));
 console.log('fproxy(1,2):',fproxy(1,2));
 console.log('new fproxy(1,2):',new fproxy(1,2));
 console.log('fproxy.prototype:',fproxy.prototype = Object.prototype);
 fproxy.a;
 
+// 如果访问目标对象不存在的属性，会抛出一个错误。如果没有这个拦截函数，访问不存在的属性，只会返回undefined
+var person = {
+    name: '张三'
+}
+var proxy=new Proxy(person, {
+    // 这里的target就是目标对象，也就是person，property就是属性名
+    get: function(target,property) {
+    
+        // target对象中是否存在property属性
+        if(property in target) {
+            return target[property];
+        } else {
+            throw new ReferenceError("Property \"" + property + "\" does not exist.");
+        }
+    }
+})
+console.log(proxy.name)
+// ------------------------------------------------------------------
+
+// get方法可以继承
+let proto = new Proxy({foo:'chen'}, {
+    get(target, propertyKey, receiver) {
+        debugger
+        console.log('GET ' + propertyKey);
+        return target[propertyKey];
+    }
+});
+let obj1 =Object.create(proto);
+console.log('obj.foo:', obj1.foo,proto.foo);
+// -------------------------------------------
