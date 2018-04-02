@@ -183,7 +183,6 @@ const el = dom.div({},
 // get方法的第三个参数receiver总是为当前的Proxy实例
 const proxy3 = new Proxy({}, {
     get:function(target, property,receiver) {
-        debugger;
         return receiver;
     }
 });
@@ -204,7 +203,7 @@ const handler1 = {
     }
 }
 const proxy4=new Proxy(target1,handler1);
-proxy4.foo;
+// proxy4.foo;
 // ------------------------------------------------------------
 
 // set拦截器使用，可以接受四个参数，依次为目标对象、属性名、
@@ -225,16 +224,19 @@ let validator = {
         obj[prop] =value;
     }
 }
-let person = new Proxy({}, validator);
-person.age=100;
-console.log('person.age:',person.age);
-person.age="young";
-person.age=300;
+let person1 = new Proxy({}, validator);
+person1.age=100;
+console.log('person.age:',person1.age);
+// person1.age="young";
+// Proxy.js:219 Uncaught TypeError: The age is not an integer
+// person1.age=300;
+// Proxy.js:222 Uncaught RangeError: The age seems invalid
+
 // ------------------------------------------------------------
 
 // 有时，我们会在对象上面设置内部属性，属性名的第一个字符使用下划线开头，
 // 表示这些属性不应该被外部使用。结合get和set方法，就可以做到防止这些内部属性被外部读写
-const handler ={
+const handler2 ={
     get(target,key) {
         invariant(key,'get');
         return target[key];
@@ -250,8 +252,51 @@ function invariant(key,action) {
         throw new Error(`Invalid attempt to ${action} private "${key}" property`);
     }
 }
-const target = {};
-const proxy=new Proxy(target,handler);
-proxy._proxy;
-proxy._prop=c;
+const target2 = {};
+const proxy2=new Proxy(target2,handler2);
+// proxy2._proxy;
+// proxy2._prop=c;
+// Proxy.js:253 Uncaught Error: Invalid attempt to get private "_proxy" property
+// ------------------------------------------------------------
+
+// set的receiver就是调用方，也就是Proxy的实例对象
+const handler3 = {
+    set:function(obj,prop,value,receiver){
+        obj[prop]=receiver;
+    }
+}
+const proxy5 = new Proxy({}, handler3);
+proxy5.foo='bar';
+console.log('proxy.foo==proxy:',proxy5.foo===proxy5);
+
+const handler4 = {
+    set:function(obj, prop, value, receiver) {
+        obj[prop] = receiver;
+    }
+};
+const proxy6 = new Proxy({},handler4);
+const myObj = {};
+const myObj1 = {};
+Object.setPrototypeOf(myObj1, proxy6);
+Object.setPrototypeOf(myObj, proxy6);
+
+myObj.foo='bar';
+myObj1.foo1='bar';
+console.log('myObj.foo===myObj:',myObj.foo===myObj, myObj1.foo1===myObj1);
+// ------------------------------------------------------------
+
+// 如果目标对象自身的某个属性，不可写或不可配置，那么set方法将不起作用。
+const obj12 = {};
+Object.defineProperty(obj12,'foo', {
+    value:'bar',
+    writable:false
+});
+const handler5 = {
+    set:function(obj,prop,value,receiver) {
+        obj[prop]='baz';
+    }
+}
+const proxy7 = new Proxy(obj12,handler5);
+proxy7.foo='baz';
+console.log('proxy7.foo:',proxy7.foo);
 // ------------------------------------------------------------
