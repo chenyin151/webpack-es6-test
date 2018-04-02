@@ -300,3 +300,42 @@ const proxy7 = new Proxy(obj12,handler5);
 proxy7.foo='baz';
 console.log('proxy7.foo:',proxy7.foo);
 // ------------------------------------------------------------
+
+
+// apply方法拦截函数的调用、call和apply操作,当调用p(),它会被Proxy的apply拦截
+var target =function(){
+    return 'I am the target';
+};
+var handler = {
+    apply:function(){
+        return 'I am the proxy';
+    }
+};
+var p = new Proxy(target, handler);
+console.log('p():',p());
+// ------------------------------------------------------------
+
+// 执行proxy函数（直接调用或call和apply调用），就会被apply方法拦截
+var twice = {
+//     在proxy中不管参数是以数组的形式还是参数列表的形式传入，
+//     apply都会把它转变为类数组的对象
+    apply(target, ctx, args) {
+        debugger
+        // Reflect.apply(target,thisArgument,argumentsList)
+        // target:目标函数
+        // thisArgument:target函数调用时绑定的this对象
+        // argumentsList:target函数调用时传入的实参列表，该函数应该是一个类数组的对象
+        return Reflect.apply(...arguments) * 2;
+    }
+};
+function sum(left, right) {
+    
+    return left + right;
+}
+var proxy8 = new Proxy(sum, twice);
+// proxy8(1,2);
+console.log('proxy8.call:',proxy8.call(null,5,6));
+console.log('proxy8.apply:',proxy8.apply(null,[7,8]));
+// Reflect.apply也会被拦截
+console.log('Reflect.apply:',Reflect.apply(proxy8,null,[9,9]));
+// ------------------------------------------------------------
