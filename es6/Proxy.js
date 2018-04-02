@@ -187,5 +187,71 @@ const proxy3 = new Proxy({}, {
         return receiver;
     }
 });
-proxy3.getReceiver === proxy3;
+console.log('proxy3.getReceiver:',proxy3.getReceiver === proxy3);
 // -------------------------------------------------------------
+
+// 如果一个属性不可配置（configurable）和不可写（writable），则该属性不能被代理，通过 Proxy 对象访问该属性会报错
+const target1 = Object.defineProperties({},{
+    foo: {
+        value:123,
+        writable:false,
+        configurable:false
+    }
+})
+const handler1 = {
+    get(target, propKey){
+        return 'abc'
+    }
+}
+const proxy4=new Proxy(target1,handler1);
+proxy4.foo;
+// ------------------------------------------------------------
+
+// set拦截器使用，可以接受四个参数，依次为目标对象、属性名、
+// 属性值和 Proxy 实例本身，其中最后一个参数可选，我们可以通过Proxy
+// 来实现数据的DOM绑定
+let validator = {
+    set:function(obj,prop,value) {
+        // 若属性名为age,则进行类型判断，若不是Number类型则抛出异常，若
+        // 值大于20，则抛出越界异常，若不是age属性则不进行检测，直接赋值
+        if(prop === 'age') {
+            if (!Number.isInteger(value)) {
+                throw new TypeError('The age is not an integer');
+            }
+            if (value > 200) {
+                throw new RangeError('The age seems invalid');
+            }
+        }
+        obj[prop] =value;
+    }
+}
+let person = new Proxy({}, validator);
+person.age=100;
+console.log('person.age:',person.age);
+person.age="young";
+person.age=300;
+// ------------------------------------------------------------
+
+// 有时，我们会在对象上面设置内部属性，属性名的第一个字符使用下划线开头，
+// 表示这些属性不应该被外部使用。结合get和set方法，就可以做到防止这些内部属性被外部读写
+const handler ={
+    get(target,key) {
+        invariant(key,'get');
+        return target[key];
+    },
+    set(target,key,value) {
+        invariant(key,'set');
+        target[key]=value;
+        return true;
+    }
+};
+function invariant(key,action) {
+    if(key[0]==='_') {
+        throw new Error(`Invalid attempt to ${action} private "${key}" property`);
+    }
+}
+const target = {};
+const proxy=new Proxy(target,handler);
+proxy._proxy;
+proxy._prop=c;
+// ------------------------------------------------------------
