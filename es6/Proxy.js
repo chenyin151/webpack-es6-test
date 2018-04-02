@@ -124,7 +124,6 @@ var pipe = (function(){
         var funcStack = [];
         var oproxy = new Proxy({}, {
             get: function(pipeObject, fnName) {
-                debugger
                 if (fnName === 'get') {
                     return funcStack.reduce(function(val, fn) {
                         return fn(val);
@@ -141,4 +140,52 @@ var double = n => n * 2;
 var pow = n => n * n;
 var reverseInt = n => n.toString().split("").reverse().join("")|0;
 console.log('pipe:',pipe(3).double.pow.reverseInt.get);
+// -------------------------------------------------------------
+
+// 利用get
+const dom = new Proxy({}, {
+    get(target, property) {
+    
+        // 这个闭包函数用来创建一个DOM元素，并给这个元素设置属性值,
+
+        return function(attrs = {},...children) {
+            const el = document.createElement(property);
+            // Object.keys返回数组中的数据，用for...of可以获取到数组中的每条数据,
+            // 若是对象，则肯定是元素数据，若是string类型的，一定就是字面量，直接
+            // 创建文本节点
+            for (let prop of Object.keys(attrs)) {
+                el.setAttribute(prop, attrs[prop]);
+            }
+            for (let child of children) {
+                if (typeof child === 'string') {
+                    child = document.createTextNode(child);
+                }
+                el.appendChild(child);
+            }
+            return el;
+        }
+    }
+});
+// const el = dom.div();
+const el = dom.div({},
+    'Hello, my name is ',
+    dom.a({href: '//example.com'}, 'Mark'),
+    '. I like:',
+    dom.ul({},
+      dom.li({}, 'The web'),
+      dom.li({}, 'Food'),
+      dom.li({}, '…actually that\'s it')
+    )
+  );
+  document.body.appendChild(el);
+// -------------------------------------------------------------
+
+// get方法的第三个参数receiver总是为当前的Proxy实例
+const proxy3 = new Proxy({}, {
+    get:function(target, property,receiver) {
+        debugger;
+        return receiver;
+    }
+});
+proxy3.getReceiver === proxy3;
 // -------------------------------------------------------------
