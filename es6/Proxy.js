@@ -549,5 +549,34 @@ var p=new Proxy(obj,{
         return [123,true,undefined,null,{},[]];
     }
 })
+// Object.getOwnPropertyNames(p);
+// ------------------------------------------------------------
+
+// 如果目标对象自身包含不可配置的属性，则该属性必须被ownKeys方法返回，否则报错
+var obj={};
+Object.defineProperty(obj,'a',{
+    configurable:false,
+    enumerable:true,
+    value:10
+})
+var p=new Proxy(obj,{
+    ownKeys:function(target){
+        return ['b'];
+    }
+})
+// Object.getOwnPropertyNames(p);
+// ------------------------------------------------------------
+
+// 如果目标对象是不可扩展的（non-extensition），这时ownKeys方法返回的数组之中，
+// 必须包含原对象的所有属性，且不能包含多余的属性，否则报错
+var obj={
+    a:1
+};
+Object.preventExtensions(obj);
+var p=new Proxy(obj,{
+    ownKeys:function(target){
+        return ['a','b']
+    }
+})
 Object.getOwnPropertyNames(p);
 // ------------------------------------------------------------
