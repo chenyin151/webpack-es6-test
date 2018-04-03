@@ -578,5 +578,31 @@ var p=new Proxy(obj,{
         return ['a','b']
     }
 })
-Object.getOwnPropertyNames(p);
+// Object.getOwnPropertyNames(p);
+// ------------------------------------------------------------
+
+// preventExtensions方法拦截Object.preventExtensions()。
+// 该方法必须返回一个布尔值，否则会被自动转为布尔值。只有当对象
+// 不可扩展的时候才能返回true,否则报错，若要使下面的不报错，在return
+// 之前调用一下Object.preventExtensitions()
+var p=new Proxy({},{
+    preventExtensions:function(target){
+        Object.preventExtensions(target);
+        return true;
+    }
+})
+Object.preventExtensions(p);
+// ------------------------------------------------------------
+
+// setPrototypeOf方法主要用来拦截Object.setPrototypeOf方法,下面例子只要
+// 修改对象的原型对象就会报错，只会返回Boolean值
+var handler={
+    setPrototypeOf(target,proto) {
+        throw new Error('Changing the prototype is forbidden');
+    }
+}
+var proto1={};
+var target=function(){};
+var proxy=new Proxy(target,handler);
+Object.setPrototypeOf(proxy,proto1);
 // ------------------------------------------------------------
