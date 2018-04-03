@@ -604,5 +604,50 @@ var handler={
 var proto1={};
 var target=function(){};
 var proxy=new Proxy(target,handler);
-Object.setPrototypeOf(proxy,proto1);
+// Object.setPrototypeOf(proxy,proto1);
+// ------------------------------------------------------------
+
+// 虽然 Proxy 可以代理针对目标对象的访问，但它不是目标对象的透明代理，
+// 即不做任何拦截的情况下，也无法保证与目标对象的行为一致。主要原因就是在
+//  Proxy 代理的情况下，目标对象内部的this关键字会指向 Proxy 代理
+const target14={
+    m:function(){
+        console.log(this===proxy12);
+    }
+}
+const handler10={};
+const proxy12=new Proxy(target14,handler10);
+target14.m();
+proxy12.m();
+
+// 下面这个例子，target和Proxy的this不是一个对象，所以用，
+// 所以用proxy.name是无法读取到target.name的内容,可以通过bind()
+// 实现把proxy的this绑定到target的this中，这样proxy就可以访问target的
+// 内容
+const _name=new WeakMap();
+class Person{
+    constructor(name){
+        _name.set(this,name);
+    }
+    get name(){
+        return _name.get(this);
+    }
+}
+const jane=new Person('Jane');
+console.log('jane.name:',jane.name);
+const proxy13=new Proxy(jane,{});
+console.log('proxy.name',proxy13.name);
+
+const target15=new Date('2015-01-01');
+const handler12={
+    get(target,prop,receiver){
+        if(prop==='getDate'){
+        
+            return target.getDate
+        }
+        return Reflect.get(target.prop);
+    }
+}
+const proxy14=new Proxy(target15,handler12);
+console.log('getDate:',proxy14.getDate());
 // ------------------------------------------------------------
