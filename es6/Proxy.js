@@ -461,9 +461,27 @@ console.log('descriptor3:',Object.getOwnPropertyDescriptor(proxy,'baz'));
 var proto1={};
 var p=new Proxy({},{
     getPrototypeOf(target){
-        debugger
+        
         return proto1;
     }
 })
 console.log('getPrototypeOf:',Object.getPrototypeOf(p)===proto1);
+// ------------------------------------------------------------
+
+// isExtensible方法拦截Object.isExtensible操作,
+// 注意：该方法只返回布尔值，不是布尔值的自动转为布尔值
+// 这个方法有一个强限制，它的返回值必须与目标对象的isExtensible
+// 属性保持一致，否则就会抛出错误
+
+var t={};
+Object.preventExtensions(t)
+var p=new Proxy(t, {
+    isExtensible:function(target) {
+        console.log('called');
+        // 这里返回true或者false必须与目标对象的isExtensible值保持一致，否则报错
+        return false;
+    }
+})
+// Object.isExtensible(proxy) === Object.isExtensible(target)
+console.log('isExtensible:',Object.isExtensible(p));
 // ------------------------------------------------------------
