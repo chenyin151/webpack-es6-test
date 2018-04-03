@@ -431,3 +431,39 @@ console.log(t)
 proxy = new Proxy(t,handler);
 delete proxy.foo
 // ------------------------------------------------------------
+
+// getOwnPropertyDescriptor拦截Object.getOwnPropertyDescriptor,返回
+// 属性描述符
+var handler = {
+    getOwnPropertyDescriptor(target,key) {
+
+        if(key[0]==='_'){
+            return;
+        }
+        return Object.getOwnPropertyDescriptor(target,key);
+    }
+};
+var target={_foo:'bar',baz:'tar'};
+var proxy=new Proxy(target,handler);
+console.log('descriptor1:',Object.getOwnPropertyDescriptor(proxy,'wat'));
+console.log('descriptor2:',Object.getOwnPropertyDescriptor(proxy,'_foo'));
+console.log('descriptor3:',Object.getOwnPropertyDescriptor(proxy,'baz'));
+// ------------------------------------------------------------
+
+// getPrototypeOf方法主要用来拦截获取对象原型,具体来说，拦截下面这些操作
+// Object.prototype.__proto__
+// Object.prototype.isPrototypeOf()
+// Object.getPrototypeOf()
+// Reflect.getPrototypeOf()
+// instanceof
+// etPrototypeOf方法的返回值必须是对象或者null，否则报错。另外，
+// 如果目标对象不可扩展（extensible），getPrototypeOf方法必须返回目标对象的原型对象
+var proto1={};
+var p=new Proxy({},{
+    getPrototypeOf(target){
+        debugger
+        return proto1;
+    }
+})
+console.log('getPrototypeOf:',Object.getPrototypeOf(p)===proto1);
+// ------------------------------------------------------------
