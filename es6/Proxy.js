@@ -485,3 +485,50 @@ var p=new Proxy(t, {
 // Object.isExtensible(proxy) === Object.isExtensible(target)
 console.log('isExtensible:',Object.isExtensible(p));
 // ------------------------------------------------------------
+
+// ownKeys方法用来拦截对象自身属性的读取操作,拦截以下操作：
+// Object.getOwnPropertyNames()
+// Object.getOwnPropertySymbols()
+// Object.keys()
+
+let target12 = {
+    a:1,
+    b:2,
+    c:3
+}
+let handler8 = {
+    ownKeys(target12){
+        return ['a'];
+    }
+}
+let proxy10=new Proxy(target12,handler8);
+console.log('keys:',Object.keys(proxy10));
+// ------------------------------------------------------------
+
+// 使用Object.keys方法时，有三类属性会被ownKeys方法自动过滤，不会返回:
+// 1.目标对象上不存在的属性
+// 2.属性名为Symbol的值
+// 3.不可遍历的属性
+let target13 = {
+    a:1,
+    b:2,
+    c:3,
+    [Symbol.for('secret')]:'4'
+};
+Object.defineProperty(target13,'key',{
+    enumerable:false,
+    configurable:true,
+    writable:true,
+    value:'static'
+});
+let handler9={
+    // Symbol.for()首先在全局中搜索有没有以该参数作为名称的Symbol值，
+    // 如果有，就返回这个Symbol值，否则就新建并返回一个以
+    // 该字符串为名称的Symbol值。和直接的Symbol就点不同了
+    ownKeys(target13){
+        return ['a','d',Symbol.for('secret'),'key'];
+    }
+};
+let proxy11 =new Proxy(target13,handler9);
+console.log('Object.keys:',Object.keys(proxy11));
+// ------------------------------------------------------------
