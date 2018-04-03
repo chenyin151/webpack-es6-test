@@ -364,13 +364,15 @@ var p=new Proxy(obj11,{
         return false;
     }
 })
-console.log('a' in p);
+// console.log('a' in p);
+// 报错：Uncaught TypeError: 'has' on proxy: trap returned falsish 
+// for property 'a' but the proxy target is not extensible
 // ------------------------------------------------------------
 
 // has拦截对for...in循环不生效
 let stu1 = {name:'张三',score:59};
 let stu2 = {name:'李四',score:99};
-let handler = {
+let handler11 = {
     has(target,prop) {
         if(prop === 'score' && target[prop]<60){
             console.log(`${target.name}不及格`);
@@ -379,8 +381,8 @@ let handler = {
         return prop in target;
     }
 }
-let oproxy1 =new Proxy(stu1,handler);
-let oproxy2=new Proxy(stu2,handler);
+let oproxy1 =new Proxy(stu1,handler11);
+let oproxy2=new Proxy(stu2,handler11);
 'score' in oproxy1;
 'score' in oproxy2;
 for(let a in oproxy1) {
@@ -389,4 +391,43 @@ for(let a in oproxy1) {
 for(let b in oproxy2){
     console.log(oproxy2[b]);
 }
+// ------------------------------------------------------------
+
+// construct方法用于拦截new命令
+// construct方法可以接受两个参数：
+// target:目标对象
+// args:构建函数的参数对象
+// construct必须返回对象
+var p = new Proxy(function(){},{
+    construct: function(target, args) {
+        console.log('called:' + args.join(', '));
+        return {value: args[0] * 10};
+    }
+})
+console.log('construct:',(new p(1,2)).value);
+// ------------------------------------------------------------
+
+// deleteProperty方法用于拦截delete操作，如果这个方法抛出错误或者返回false,
+// 当前属性就无法被delete命令删除
+var handler = {
+    deleteProperty(target,key) {
+        invariant(key,'delete');
+        return true;
+    }
+}
+var target = {_prop:'foo'};
+
+var t2=Object.defineProperty({},'foo',{
+    configurable:false
+})
+var proxy = new Proxy(t2,handler);
+// delete proxy.foo;
+var t = {foo:'111'};
+Object.preventExtensions(t);//加入preventExtensions就不能给对象新增新的属性，否则报错
+// Object.defineProperty(t,'foo1',{
+//     value:21
+// })
+console.log(t)
+proxy = new Proxy(t,handler);
+delete proxy.foo
 // ------------------------------------------------------------
