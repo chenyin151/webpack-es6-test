@@ -532,3 +532,22 @@ let handler9={
 let proxy11 =new Proxy(target13,handler9);
 console.log('Object.keys:',Object.keys(proxy11));
 // ------------------------------------------------------------
+
+// ownKeys拦截Object.getOwnPropertyNames()实例
+var p=new Proxy({},{
+    ownKeys:function(target){
+        return ['a','b','c'];
+    }
+})
+console.log('ownKeys:',Object.getOwnPropertyNames(p));
+// ------------------------------------------------------------
+
+// ownKeys必须返回的是字符串数组，因为它是键名
+var obj={};
+var p=new Proxy(obj,{
+    ownKeys:function(target){
+        return [123,true,undefined,null,{},[]];
+    }
+})
+Object.getOwnPropertyNames(p);
+// ------------------------------------------------------------
