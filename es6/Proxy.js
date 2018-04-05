@@ -660,11 +660,29 @@ const handler12 = {
     get(target, prop, receiver) {
         if (prop === 'getDate') {
 
-            return target.getDate
+            return target.getDate.bind(target);
         }
         return Reflect.get(target.prop);
     }
 }
 const proxy14 = new Proxy(target15, handler12);
 console.log('getDate:', proxy14.getDate());
+// ------------------------------------------------------------
+
+// Proxy对象可以拦截目标对象的任意属性，这使得它很适合用来写Web服务客户端，
+// createWebService会返回一个Proxy对象，当调用这个代理的employees方法会
+// 触发代理的get拦截，它会返回一个Promise
+const service = createWebService('http://example.com/data');
+service.employees().then(json => {
+    const employees = JSON.parse(json);
+})
+
+function createWebService(baseUrl) {
+    return new Proxy({}, {
+        get(target, propKey, receiver) {
+            // httpGet会返回一个Promise对象
+            return () => httpGet(baseUrl + '/' + propKey);
+        }
+    })
+}
 // ------------------------------------------------------------
