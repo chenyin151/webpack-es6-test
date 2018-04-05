@@ -690,7 +690,7 @@ function createWebService(baseUrl) {
 //  Proxy.revocable方法返回一个可取消的Proxy实例
 //  Proxy.revocable方法返回一个对象， 该对象的proxy属性是Proxy实例， 
 //  revoke属性是一个函数， 可以取消Proxy实例。 上面代码中， 当执行revoke函数之后，
-//  再访问Proxy实例， 就会抛出一个错误
+//  再访问Proxy实例， 就会抛出一个错误 
 let target = {};
 let handler = {};
 let { proxy, revoke } = Proxy.revocable(target, handler);
