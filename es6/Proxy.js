@@ -681,7 +681,7 @@ function createWebService(baseUrl) {
     return new Proxy({}, {
         get(target, propKey, receiver) {
             // httpGet会返回一个Promise对象
-            return () => httpGet(baseUrl + '/' + propKey);
+            return () => httpGet(baseUrl + '/' + propKey)
         }
     })
 }
